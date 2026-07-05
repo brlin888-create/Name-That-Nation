@@ -674,11 +674,11 @@ class CountryInfoPanel extends JPanel
 		cards = cardsIn;
 		conInfo = new JLabel("Country Info");
 		conInfo.setFont(new Font("monospaced", Font.Bold, 30));
-		proceed = new JButton("Back");
+		proceed = negit w JButton("Back");
 
 		proceed.addActionListener(new next());
 		JTextArea cons = new JTextArea(fileIn("files/Read/countriesContinentHard.txt");
-		cons
+		cons.setLineWrap;
 		
 	}
 }

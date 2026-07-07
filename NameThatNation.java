@@ -677,8 +677,119 @@ class CountryInfoPanel extends JPanel
 		proceed = new JButton("Back");
 
 		proceed.addActionListener(new next());
-		JTextArea cons = new JTextArea(fileIn("files/Read/countriesContinentHard.txt");
-		cons.setLineWrap;
-		
+		JTextArea cons = new JTextArea(fileIn("files/Read/countriesContinentHard.txt"));
+		cons.setLineWrap(true);
+		cons.setEditable(false);
+		cons.setWrapStyleWord(true);
+		cons.setFont(new Font("monospaced", Font.PLAIN, 15));
+		infos = new JScrollPane(cons);
+		infos.setOpaque(false);
+		infos.setPreferredSize(new Dimension(400, 1000));
+
+		JPanel butHolder = new JPanel();
+		butHolder.add(proceed);
+		butHolder.setOpaque(false);
+
+		JPanel scroller = new JPanel();
+		scroller.add(infos);
+		scroller.setOpaque(false);
+		JPanel conHolder = new JPanel();
+		conHolder.add(conInfo);
+		conHolder.setOpaque(false);
+		add(conHolder, BorderLayout.NORTH);
+		add(scroller, BorderLayout.EAST);
+		add(butHolder, BorderLayout.SOUTH);
 	}
+	public void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		g.drawImage(parent.getMyImage("pictures/panelImages/CountryInfoBG.jpg"), 0, 0, 960, 540, this);
+		g.drawImage(parent.getMyImage("pictures/panelImages/Earth.png"), 70, 85, 350, 350, this);
+	}
+	//class to check if next button clicked
+	class next implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			String which = ((JButton)e.getSource()).getText();
+			if(which.equals("Back"))
+				cards.show(parent, "Start");
+		}
+	}
+	//Used to read in files (try-catch) and assessed in other classes too
+	public String fileIn(String fileName)
+	{
+		String read = "";
+		Scanner country = null;
+		try
+		{
+			country = new Scanner(new File(fileName));
+		}
+		catch(FileNotFoundException e)
+		{
+			System.err.println("cannot find file " + fileName + " to read.\n\n\n"); //error message
+			e.printStackTrace();
+		}
+		while(country.hasNextLine())
+		{
+			read += country.nextLine() + "\n";
+		}
+		country.close();
+		return read;
+	}
+}
+
+/* This is the main class for the gameplay. There are lots of components and even
+ * arrays that are specifically used for the storing of the names of the countries
+ * and the values to decide on what continents to read from the file. There 
+ * are also JButtons for the user to select what they think the answer is based 
+ * on an image. */
+
+class GamePanel extends JPanel
+{
+	private NameThatNationHolder parent;
+	private CardLayout cards;
+	private Information info;
+	private ArrayList<String> countries;
+	private String diff;
+	private boolean[] getContinents;
+	private boolean[] getCountries;
+	private Timer timer;
+	private JLabel timeLabel, whatNation, manyPoints, hintsLeft, livesLeft;
+	private int timeRemaining;
+	private JButton exit, op1, op2, op3, op4, useHint;
+	private JButton[] bArray;
+	private int count;
+	private int questionNumber;
+	private int num1, num2, num3, order, bCount;
+	private JButton bNext;
+	private Image[] powers;
+	private boolean[] powerindex;
+	private boolean[] set;
+	private boolean[] firstTime;
+	private int counts;
+	private int points;
+	private int tPoints;
+	private int hints;
+	private int lives;
+	private int cStreak;
+	private boolean[] hOrder;
+	private boolean[] lOrder;
+	private boolean answered;
+	private boolean usedHint;
+	private boolean freezeCheck;
+	private int freezeTimeRemaining;
+	private Timer freezeTimer;
+	private boolean doubleEnabled;
+	private hintsPanel HP;
+	private ArrayList<String> conContinent;
+	private ArrayList<String> diffCon;
+	private boolean isDiff;
+	private boolean useAny;
+	private int timePassed;
+	private boolean useSkip;
+	private JLabel completion;
+	private JLabel isRight;
+
+	public GamePanel(NameThatNationHolder
 }

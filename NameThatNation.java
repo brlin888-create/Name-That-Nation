@@ -791,5 +791,86 @@ class GamePanel extends JPanel
 	private JLabel completion;
 	private JLabel isRight;
 
-	public GamePanel(NameThatNationHolder
+	public GamePanel(NameThatNationHolder panelCardsIn, CardLayout cardsIn, Information infoIn)
+	{
+		setLayout(null);
+		parent = panelCardsIn;
+		cards = cardsIn;
+		info = infoIn;
+		points = 30;
+		tPoints = 0;
+		counts = 0;
+		hints = 3;
+		lives = 3;
+		cStreak = 1;
+		completion = new JLabel("Progress: 0%"); 
+		isRight = new JLabel("");
+
+		usedHint = false;
+		useAny = false;
+		freezeTimeRemaining = 0;
+		freezeCheck = false;
+		freezeTimer = new Timer(1000, new freezeTimerListener());
+		hintsLeft = new JLabel("Hints: ");
+		livesLeft = new JLabel("lives ");
+		useHint = new JButton("hint");
+
+		hintsLeft.setBounds(650, 250, 200, 75);
+		livesLeft.setBounds(650, 260, 100, 75);
+		timePassed = 0;
+		useHint.addActionListener(new hListener());
+		useHint.setBounds(700, 150, 60, 30);
+		add(hintsLeft);
+		add(useHint);
+		add(livesLeft);
+		answered = false;
+		hOrder = new boolean[] {true, true, true};
+		lOrder = new boolean[] {true, true, true};
+
+		op1 = new JButton();
+		op2 = new JButton();
+		op3 = new JButton();
+		op4 = new JButton();
+		bNext = new JButton("Next");
+		bNext.addActionListener(new nListener());
+		bNext.setBounds(800, 100, 75, 25);
+		doubleEnabled = false;
+		useSkip = false;
+		set = new boolean[] {false, false, false, false};
+		firstTime = new boolean[] {false, false, false, false};
+		manyPoints = new JLabel("points: 0");
+		manyPoints.setFont(new Font("Serif", Font.PLAIN, 20));
+		manyPoints.setBounds(750, 0, 400, 75);
+		add(manyPoints);
+		add(bNext); 
+		
+		op1.addActionListener(new bListener());
+		op2.addActionListener(new bListener());
+		op3.addActionListener(new bListner());
+		op4.addActionListener(new bListener());
+		diff = "files/Read/countriesContinent" + info.getFileName() + ".txt";
+		exit = new JButton("Quit");
+		exit.addActionListener(new exitListener());
+		whatNation = new JLabel("What Nation is This?");
+		whatNation.setFont(new Font("serif", Font.PLAIN, 40));
+		completion.setBounds(50, 100, 200, 50);
+		isRight.setBounds(50, 200, 200, 50);
+
+		completion.setFont(new Font("monospaced", Font.BOLD, 20));
+		isRight.setFont(new Font("monospaced", Font.BOLD, 30));
+		isRight.setVisible(false);
+		exit.setBounds(700, 100, 75, 25);
+		whatNation.setBounds(300, -75, 500, 200);
+		add(exit);
+		add(whatNation);
+		bArray = new JButton[] {op1, op2, op3, op4};
+		countries = new ArrayList<>();
+		diffCon = new ArrayList<>();
+		getContinents = info.getContinent();
+		timeRemaining = 180;
+		conContinent = new ArrayList<>();
+		
+
+
+	}
 }

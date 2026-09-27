@@ -1,0 +1,27 @@
+Easy:
+Tom     - 1080 pts
+Liam    - 860 pts
+Alice   - 750 pts
+Ben     - 580 pts
+Karen   - 420 pts
+Leo     - 310 pts
+Bob     - 150 pts
+Max     - 90 pts
+bobo    - 60 pts
+
+Medium:
+Ethan   - 920 pts
+Nina    - 780 pts
+Daniel  - 670 pts
+Joe     - 600 pts
+Chloe   - 540 pts
+Ella    - 400 pts
+Enter Your Name:Bo Ruei Lin- 30 pts
+
+Hard:
+Olivia  - 1100 pts
+Michael - 1020 pts
+Ryan    - 940 pts
+Grace   - 850 pts
+Sophie  - 520 pts
+Bob     - 0 pts

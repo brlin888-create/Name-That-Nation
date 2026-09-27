@@ -1747,3 +1747,715 @@ class CorrectPanel extends JPanel implements ActionListener
 		}
 	}	
 }
+// Endpanel class that mainly directs user to play game another time, save score
+// check leaderboard, etc. Also allows the user to see how the score is calculated.
+class EndPanel extends JPanel implements ActionListener
+{
+    private NameThatNationHolder parent;
+    private CardLayout cards;
+    private Information info;
+    private JButton saveScore, checkAchieve, mainMenu, checkLead, checkCorrect;
+    private JTextArea area;
+    private JLabel completed;
+    private JLabel accuracy;
+    //Initialize components, set as GridLayout, then adding components
+    public EndPanel(NameThatNationHolder parentIn, CardLayout cardsIn, Information infoIn)
+    {
+        parent = parentIn;
+        cards = cardsIn;
+        info = infoIn;
+        
+        setLayout(new BorderLayout());
+        JPanel endPaneLabel = new JPanel();
+        endPaneLabel.setOpaque(false);
+        JLabel endLabel = new JLabel("End Panel");
+        endLabel.setForeground(Color.WHITE);
+        endPaneLabel.add(endLabel);
+        endLabel.setFont(new Font("Monospaced", Font.BOLD, 30));
+        completed = new JLabel("Time Taken: " + String.format("%02d:%02d", info.getRemaining()/60, info.getRemaining()%60));
+		accuracy = new JLabel("Guessing Accuracy: " + (info.getDone()-info.returnIncorrects().size())*100/info.getDone() + "%");
+		completed.setFont(new Font("serif", Font.PLAIN, 35));
+		accuracy.setFont(new Font("serif", Font.PLAIN, 35));
+		
+		JPanel infos = new JPanel(new GridLayout(2,1));
+		infos.add(completed);
+		infos.setOpaque(false);
+		infos.add(accuracy);
+        JPanel leftAndRightPane = new JPanel();
+        leftAndRightPane.setOpaque(false);
+        add(endPaneLabel, BorderLayout.NORTH);
+        
+        add(leftAndRightPane, BorderLayout.CENTER);
+        JPanel infoHolder = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        infoHolder.add(infos);
+        infoHolder.setOpaque(false);
+        add(infoHolder, BorderLayout.SOUTH);
+        leftAndRightPane.setLayout(new GridLayout(1, 2));
+        JPanel leftPane = new JPanel();
+        leftPane.setOpaque(false);
+        JPanel rightPane = new JPanel(new GridLayout(3, 2));
+        rightPane.setOpaque(false);
+        
+        saveScore = new JButton("Save Score");
+        mainMenu = new JButton("Main Menu");
+        checkAchieve = new JButton("Check Achievements");
+        checkLead = new JButton("Check Leaderboard");
+        checkCorrect = new JButton("View wrong questions");
+        saveScore.setBackground(Color.RED);
+        mainMenu.setBackground(Color.ORANGE);
+        checkAchieve.setBackground(Color.YELLOW);
+        checkLead.setBackground(Color.GREEN);
+        checkCorrect.setBackground(Color.PINK);
+        
+        saveScore.setPreferredSize(new Dimension(175, 50));
+        mainMenu.setPreferredSize(new Dimension(175, 50));
+        checkAchieve.setPreferredSize(new Dimension(175, 50));
+        checkLead.setPreferredSize(new Dimension(175, 50));
+        checkCorrect.setPreferredSize(new Dimension(175, 50));
+        
+        JPanel b1 = new JPanel();
+        b1.setOpaque(false);
+        JPanel b2 = new JPanel();
+        b2.setOpaque(false);
+        JPanel b3 = new JPanel();
+        b3.setOpaque(false);
+        JPanel b4 = new JPanel();
+        b4.setOpaque(false);
+        JPanel b5 = new JPanel();
+        b5.setOpaque(false);
+        
+        b1.add(saveScore);
+        b2.add(mainMenu);
+        b3.add(checkAchieve);
+        b4.add(checkLead);
+        b5.add(checkCorrect);     
+        rightPane.add(b1);
+        rightPane.add(b2);
+        rightPane.add(b3);
+        rightPane.add(b4);
+        rightPane.add(b5);
+        
+        saveScore.addActionListener(this);
+        mainMenu.addActionListener(this);
+        checkAchieve.addActionListener(this);
+        checkLead.addActionListener(this);
+        checkCorrect.addActionListener(this);
+        area = new JTextArea(showCalc());
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        area.setEditable(false);
+        
+        JScrollPane calcP = new JScrollPane(area);
+        calcP.setPreferredSize(new Dimension(400, 200));
+        area.setFont(new Font("Times New Roman", Font.BOLD, 20));
+        
+        leftPane.add(calcP);
+        leftAndRightPane.add(leftPane);
+        leftAndRightPane.add(rightPane);
+    }
+    // Draws the background image of the panel
+    public void paintComponent(Graphics g)
+    {
+		super.paintComponent(g);
+		g.drawImage(parent.getMyImage("pictures/panelImages/World.jpg"), 0, 0, 960, 540, this);
+	}
+    //Shows how the point system is calculated to the user, using a for loop structure
+    public String showCalc()
+    {
+		String result = "";
+		for (int i = 0; i < info.getStreak().size(); i ++ )
+		{
+			if(i > 0)
+				if(info.getStreak().get(i) == info.getStreak().get(i-1)*2)
+					result += "Double points used, ";
+			result += info.getStreak().get(i) + " points x " + info.getTime().get(i) + "\n";
+		}
+		result += "total points: " + info.getP();
+		return result;
+	}
+    // checks if the save score JButton is clicked with
+    // if statements for the specific card shown
+    public void actionPerformed(ActionEvent evt)
+    {
+        String which = evt.getActionCommand();
+        if (which.equals("Save Score"))
+        {
+            writeLeader();
+            cards.show(parent, "LeaderBoard");
+        }
+        else if(which.equals("Main Menu"))
+        {
+			cards.show(parent, "Start");
+			info.reset();
+		}
+		else if(which.equals("Check Leaderboard"))
+		{
+			LeaderPanel lp = new LeaderPanel(parent, cards, info);
+			parent.add(lp, "Leader");
+			cards.show(parent, "Leader");
+		}
+		else if (which.equals("Check Achievements"))
+		{
+			Achievements achieve = new Achievements(parent, cards, info);
+			parent.add(achieve, "Achievements");
+			cards.show(parent, "Achievements");
+		}
+		else
+		{
+			cards.show(parent, "Correct");
+		}
+    }
+    //method used to try-catch to add to the leaderboard txt file
+    public void writeLeader()
+    {
+		String line = "";
+		String result = "";
+		String need = "Easy:";
+		PrintWriter pw = null;
+		Scanner kb = null;
+		boolean used = false;
+		try
+		{
+			kb = new Scanner(new File("Files/Write/LeaderBoard.txt"));	
+		}
+		catch(IOException e)
+		{
+			System.err.println("Cannot find LeaderBoard.txt to read from");
+			e.printStackTrace();
+		}
+		
+		while(kb.hasNext())
+		{
+			line = kb.nextLine();
+			if(line.equals("") && !used && need.equals(info.getFileName() + ":"))
+				result += String.format("%-8s- %s", info.getName(), info.getP() + " pts") + "\n";
+			if(line.indexOf(":") != -1)
+				need = line;
+			if(line.indexOf("-") != -1 && need.equals(info.getFileName() + ":") && !used)
+			{
+				if(info.getP() >= Integer.parseInt(line.substring(line.indexOf("-")+2, line.indexOf("pts")-1)))
+				{
+					result += String.format("%-8s- %s", info.getName(), info.getP() + " pts") + "\n";
+					used = true;
+				}
+			}
+			result += line + "\n";
+		}
+		try
+		{
+			pw = new PrintWriter(new File("Files/Write/LeaderBoard.txt"));	
+		}
+		catch(IOException e)
+		{
+			System.err.println("Cannot find LeaderBoard.txt to write to");
+			e.printStackTrace();
+		}
+		pw.print(result);
+		kb.close(); //close scanner
+		pw.close(); //close scanner
+		saveScore.setEnabled(false);
+	}
+}
+/* Main purpose of class to to display the leaderboard. This is done 
+ * by reading in the leaderboard file, where the user can add their score
+ * which is sorted into their category. This is then set as the content
+ * of a JScrollPane, then shown to the user. */
+class LeaderPanel extends JPanel implements ActionListener
+{
+	private NameThatNationHolder parent;
+	private CardLayout cards;
+	private Information info;
+	private JButton back;
+	//Initialize variables, making sure words are not cut off, and formatted properly
+	//setBounds methods used to set the specific location of where components are shown
+	public LeaderPanel(NameThatNationHolder parentIn, CardLayout cardsIn, Information infoIn)
+	{
+		parent = parentIn;
+		cards = cardsIn;
+		info = infoIn;
+		
+		setLayout(null);
+		back = new JButton("End Panel");
+		back.addActionListener(this);
+		back.setBounds(430, 450, 100, 50);
+		JTextArea Leader = new JTextArea(readLead());
+		Leader.setLineWrap(true);
+        Leader.setEditable(false);
+        Leader.setWrapStyleWord(true);
+		
+		JScrollPane lead = new JScrollPane(Leader);
+		Leader.setFont(new Font("monospaced", Font.PLAIN, 20));
+		lead.setBounds(252, 123, 463, 302);
+		
+		add(lead);
+		add(back);
+	}
+	//Shows end panel when action is done
+	public void actionPerformed(ActionEvent e)
+	{
+		cards.show(parent, "End");
+	}
+	//draws the background image for the LeaderBoard Panel
+	public void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		g.drawImage(parent.getMyImage("pictures/panelImages/LeaderBoardBG.jpg"), 0, 0, 960, 540, this);
+	}
+	//Trys to read in the leaderboard txt file, then adding to string which is returned
+	public String readLead()
+	{
+		Scanner kb = null;
+		String result = "";
+		try
+		{
+			kb = new Scanner(new File("Files/Write/LeaderBoard.txt"));
+		}
+		catch(IOException e)
+		{
+			System.err.println("Cannot find LeaderBoard.txt to read from");
+			e.printStackTrace();
+		}
+		while(kb.hasNext())
+		{
+			result += kb.nextLine() + "\n";
+		}
+		kb.close();
+		return result;
+	}
+}
+/* Contains many achievements which can be clicked on, that allows the user
+ * to see what they have unlocked and haven't unlocked. The different
+ * achievements have specific requirements that allows the user to unlock them
+ * and are kept throughout multiple gameplays. */
+class Achievements extends JPanel implements ActionListener
+{
+	private NameThatNationHolder parent;
+	private CardLayout cards;
+	private Information info;
+	private JButton back, fTime, sStart, ngHere, gWhiz, cPro, uiWisely, fiTime, sAlive, sSkip, dEnabled, gueAll, nhNeeded, sStarter, moNations;
+	private JButton hGuessmaster, sSeeker, mLover;
+	private JTextArea showAchieve;
+	private JButton[] bAchieve;
+	/* Initializes components including JScrollPane, that currently has the
+	 * achievements whether they are achieved or not. */
+	public Achievements(NameThatNationHolder parentIn, CardLayout cardsIn, Information infoIn)
+	{
+		parent = parentIn;
+		cards = cardsIn;
+		info = infoIn;
+		setLayout(null);
+		back = new JButton("Go To End Panel");
+		back.addActionListener(this);
+		back.setBounds(25, 15, 150, 25);
+		fTime = new JButton("Description");
+		sStart = new JButton("Description");
+		ngHere = new JButton("Description");
+		gWhiz = new JButton("Description");
+		cPro = new JButton("Description");
+		uiWisely = new JButton("Description");
+		fiTime = new JButton("Description");
+		sAlive = new JButton("Description");
+		sSkip = new JButton("Description");
+		dEnabled = new JButton("Description");
+		gueAll = new JButton("Description");
+		nhNeeded = new JButton("Description");
+		sStarter = new JButton("Description");
+		moNations = new JButton("Description");
+		hGuessmaster = new JButton("Description");
+		sSeeker = new JButton("Description");
+		mLover = new JButton("Description");
+		bAchieve = new JButton[] {fTime, sStart, ngHere, gWhiz, cPro, uiWisely, fiTime, sAlive, sSkip, dEnabled, gueAll, nhNeeded, sStarter, moNations,
+			hGuessmaster, sSeeker, mLover};
+		
+		JLabel achieve = new JLabel("Achievements");
+		achieve.setForeground(Color.WHITE);
+		achieve.setFont(new Font("Monospaced", Font.PLAIN, 30));
+		achieve.setBounds(380, 0, 350, 25);
+		add(achieve);
+		int x = 50;
+		int y = 190;
+		
+		for (int a = 0; a < 10; a++)
+		{
+			bAchieve[a].setBounds(x,y,125,25);
+			bAchieve[a].addActionListener(this);
+			add(bAchieve[a]);
+			x += 175;
+			if(a%5==4)
+			{
+				x = 50;
+				y += 150;
+			}
+			
+		}
+		x = 25;
+		y = 475;
+		for (int b = 10; b < 17; b++)
+		{
+			bAchieve[b].setBounds(x,y,100,25);
+			bAchieve[b].addActionListener(this);
+			add(bAchieve[b]);
+			x += 130;
+		}
+		add(back);
+	}
+	/* Draws the background image for the panel */
+	public void paintComponent(Graphics g)
+    {
+		super.paintComponent(g);
+		g.drawImage(parent.getMyImage("pictures/panelImages/AchievementsBG.png"), 0, 0, 960, 540, this);
+	}
+	public void actionPerformed(ActionEvent e) //shows end panel
+	{
+		JButton which = (JButton)e.getSource();
+		for (int b = 0; b < 17; b ++)
+		{
+			if(which == bAchieve[b])
+			{
+				AchievementHolder ah = new AchievementHolder(b, parent, cards, info);
+				parent.add(ah, "aHolder");
+				cards.show(parent, "aHolder");
+			}
+		}
+		if(which == back)
+			cards.show(parent, "End");
+	}
+}
+/* This class is mainly used to proceed the CardLayout from the Achievement Panel, 
+ * to the specific panel that describes more about the achievements. */
+class AchievementHolder extends JPanel implements ActionListener
+{
+	private JLabel name;
+	private JLabel description;
+	private JLabel state;
+	private String[] des;
+	private JButton back;
+	private NameThatNationHolder parent;
+	private CardLayout cards;
+	private Information info;
+	private int index;
+	private JButton bPrevious, bNext;
+	/* This constructor initializes all the field variables. Other than that, 
+	 * it also sets the specific font which is set in locations so that the 
+	 * game looks good. */
+	public AchievementHolder(int ind, NameThatNationHolder holderIn, CardLayout cardsIn, Information infoIn)
+	{
+		parent = holderIn;
+		cards = cardsIn;
+		info = infoIn;
+		index = ind;
+		des = new String[] {
+			"First Time - Get your first question correct", 
+			"Sharp Start - Get 5 correct answers in one session",
+			"No Guessing Here - Get your first perfect streak of 10",
+			"Geography Whiz - Get 50 correct answers",
+			"Continental Pro - Correctly guess at least 1 country from every continent",
+			"Use It Wisely - Use any one power-up in a session",
+			"Frozen in Time - Use the Freeze Time power-up",
+			"Staying Alive - Use the Extra Life power-up while having less than 3 lives",
+			"Strategic Skip - Use the Skip power-up",
+			"Double Enabled - Use the Double Points power-up",
+			"Gotta Use Em' All - Use all power-ups",
+			"No Help Needed - Finish a game without using any power-ups or hints",
+			"Speedrun Starter - Finish a full game in under 1 minute (on any difficulty)",
+			"Master of Nations - Unlock all other achievements",
+			"Hardcore Guessmaster - Get 50 correct answers in Hard mode in one session",
+			"Streak Seeker - Reach a 25-correct answer streak in any mode",
+			"Map Lover - Finish a session by correctly answering all questions",
+			
+		};
+		name = new JLabel(des[index].substring(0, des[index].indexOf("-")-1));
+		name.setFont(new Font("serif", Font.PLAIN, 50));
+		name.setForeground(Color.WHITE);
+		description = new JLabel(des[index].substring(des[index].indexOf("-")+2));
+		description.setFont(new Font("serif", Font.PLAIN, 30));
+		description.setForeground(Color.WHITE);
+		state = new JLabel("Locked");
+		if(info.returnEarn()[index])
+			state.setText("Unlocked");
+		state.setFont(new Font("serif", Font.PLAIN, 25));
+		state.setForeground(Color.WHITE);
+		setLayout(new BorderLayout());
+		
+		JPanel hold1 = new JPanel(new GridLayout(3,1));
+		name.setOpaque(false);
+		description.setOpaque(false);
+		state.setOpaque(false);
+		hold1.add(name);
+		hold1.add(description);
+		hold1.add(state);
+		bPrevious = new JButton("Previous");
+		bNext = new JButton("Next");
+		bPrevious.setFont(new Font("monospaced", Font.PLAIN,20));
+		bNext.setFont(new Font("monospaced", Font.PLAIN, 20));
+		bNext.addActionListener(this);
+		bPrevious.addActionListener(this);
+		JPanel pHolder = new JPanel();
+		JPanel nHolder = new JPanel();
+		pHolder.add(bPrevious);
+		nHolder.add(bNext);
+		pHolder.setOpaque(false);
+		nHolder.setOpaque(false);
+		JPanel hold2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		hold2.add(hold1);
+		back = new JButton("Go To Achievements Panel");
+		back.addActionListener(this);
+		JPanel hold3 = new JPanel();
+		hold3.add(back);
+		hold1.setOpaque(false);
+		hold3.setOpaque(false);
+		hold2.setOpaque(false);
+		add(pHolder, BorderLayout.WEST);
+		add(nHolder, BorderLayout.EAST);
+		add(hold2, BorderLayout.NORTH);
+		add(hold3, BorderLayout.SOUTH);
+		
+		if(index == 0)
+			bPrevious.setEnabled(false);
+		if(index == 16)
+			bNext.setEnabled(false);
+	}
+	/* This method from ActionListener is used to check the specific JButton that is clicked
+	 * to decide which achievement to show. These buttons include both the previous and the next JButtons.
+	 * If neither is clicked, will go back to the Achievements Panel. */
+	public void actionPerformed(ActionEvent e)
+	{
+		String which = ((JButton)e.getSource()).getText();
+		if(which.equals("Previous"))
+		{
+			index -= 1;
+			anotherAchievement();
+			bNext.setEnabled(true);
+			repaint();
+		}
+		else if(which.equals("Next"))
+		{
+			index += 1;
+			anotherAchievement();
+			bPrevious.setEnabled(true);
+			repaint();
+		}
+		else
+			cards.show(parent, "Achievements");
+	}
+	/* This paintComponent method is used to draw the image of the locked or unlocked 
+	 * image. The image is used to convey whether the achievement has been done. The images
+	 * are drawn through the getMyImage() from another class, which makes drawing images easier. */
+	public void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		g.drawImage(parent.getMyImage("pictures/panelImages/ShowAchieveBG.png"), 0, 0, 960, 540, this);
+		Image lock = parent.getMyImage("pictures/panelImages/LockedLock.png");
+		if(info.returnEarn()[index])
+			lock = parent.getMyImage("pictures/panelImages/UnlockedLock.png");
+		g.drawImage(lock, 400, 125, lock.getWidth(null), lock.getHeight(null), this);
+	}
+	/* This method is for showing the description and name of the achivements. 
+	 * By including if-else statements, it sets the JButtons as either enabled/disabled. 
+	 * This is because there is no previous achievement when on the first achievement and no
+	 * next achievement for the last achievement. */
+	public void anotherAchievement()
+	{
+		name.setText(des[index].substring(0, des[index].indexOf("-")-1));
+		description.setText(des[index].substring(des[index].indexOf("-")+2));
+		if(index == 0)
+		{
+			bPrevious.setEnabled(false);
+		}
+		if(index == 16)
+		{
+			bNext.setEnabled(false);
+		}
+		if(info.returnEarn()[index])
+			state.setText("Unlocked");
+		else
+			state.setText("Locked");
+	}
+}
+/* Main functions of this class is to store the information necessary for the
+ * other classes to access and use. This includes name, color, image size,
+ * file name, and continents. */
+class Information
+{
+	private String name;
+	private int red, green, blue;
+	private String fileName;
+	private int sizeOfImage;
+	private boolean[] states;
+	private String difficulty;
+	private ArrayList<Integer> corrections;
+	private ArrayList<String> incorr;
+	private int pts;
+	private ArrayList<Integer> pStreak;
+	private ArrayList<Integer> sTime;
+	private boolean[] earned;
+	private int numCorrect;
+	private int percentage;
+	private int timeSpent;
+	private int questionsDone;
+	public Information()
+	{
+		states = new boolean[]{true, true, true, true, true, true, true};
+		// locations are this Antarctica, Australia, South America, Africa, Asia, North America, Europe 
+		fileName = "Easy";
+		earned = new boolean[17];
+		sizeOfImage = 2;
+		corrections = new ArrayList<Integer>();
+		incorr = new ArrayList<String>();
+		pStreak = new ArrayList<Integer>();
+		pStreak.add(10);
+		pStreak.add(30);
+		sTime = new ArrayList<Integer>();
+		sTime.add(0);
+		sTime.add(0);
+		numCorrect = 0;
+		percentage = 0;
+		questionsDone = 0;
+		timeSpent = 0;
+		
+	}
+	/* Methods other than the constructor below are used to store
+	 * specific components that need to be accessed by other classes. 
+	 * To do this, we used multiple methods where each component has a 
+	 * corresponding set method, and a get method, stored using the 
+	 * field variables */
+	public String getName() //get name of user
+	{
+		return name;
+	}
+
+	public void setName(String nameIn) //sets name of user from textfield
+	{
+		name = nameIn;
+	}
+
+	public void setColor(int r, int g, int b) //sets the color of the background
+	{
+		red = r;
+		green = g;
+		blue = b;
+	}
+	public Color getColor() //return the color for background display on the game panel
+	{
+		return new Color(red, green, blue);
+	}
+	public void setFile(String fileIn) //sets the file difficulty
+	{
+		fileName = fileIn;
+	}
+	public String getFileName() //gets the file name depending on difficulty
+	{
+		return fileName;
+	}
+	public void setImageSize(int imageSize) //sets the image size
+	{
+		sizeOfImage = imageSize;
+	}
+	public int getImageSize() //returns the image size wanted
+	{
+		return sizeOfImage;
+	}
+	public void setContinent(int index, boolean trueFalse) //sets the state at which a continent was chosen
+	{
+		states[index] = trueFalse;
+	}
+	public boolean[] getContinent() //returns the continents that they chose
+	{
+		return states;
+	}
+	public void correctAnswers(int corrects) //sees if answers were correct
+	{
+		corrections.add(corrects);
+	}
+	public ArrayList <Integer> returnAnswers() //returns arraylist for correct answers (for color shown)
+	{
+		return corrections;
+	}
+	public void setP(int pt) //sets points
+	{
+		pts = pt;
+	}
+	public int getP() //returns points
+	{
+		return pts;
+	}
+	public void incorrectAnswers(String incorrect) //sets the incorrect questions
+	{
+		incorr.add(incorrect);
+	}
+	public ArrayList<String> returnIncorrects() //returns the incorrect questions
+	{
+		return incorr;
+	}
+	public void setStreak(int value) //set the streak
+	{
+		pStreak.add(value);
+		sTime.add(0);
+	}
+	public ArrayList <Integer> getStreak() //get the streak
+	{
+		return pStreak;
+	}
+	public void setTime(int value) //sets the time left
+	{
+		sTime.set(value, sTime.get(value) + 1);
+	}
+	public ArrayList <Integer> getTime() //returns time left
+	{
+		return sTime;
+	}
+	public void reset() //called to reset all arraylists
+	{
+		sTime.clear();
+		pStreak.clear();
+		corrections.clear();
+		incorr.clear();
+		sTime.add(0);
+		sTime.add(0);
+		pStreak.add(10);
+		pStreak.add(30);
+		questionsDone = 0;
+		timeSpent = 0;
+		percentage = 0;
+	}
+	public void setEarn(int ind) //sets earned points
+	{
+		earned[ind] = true;
+	}
+	public boolean[] returnEarn() //returns points
+	{
+		return earned;
+	}
+	public void setCorrect() //sets correct answers
+	{
+		numCorrect += 1;
+	}
+	public int getCorrect() //get correct answers
+	{
+		return numCorrect;
+	}
+	public void setPercent(int completed) //sets the percentage of the game that the user has finished
+	{
+		percentage = completed;
+	}
+	public int returnPercent() //returns the percentage
+	{
+		return percentage;
+	}
+	public void setRemaining(int timeTaken) //sets the remaining time
+	{
+		timeSpent = timeTaken;
+	}
+	public void setTotal() //sets the total number of questions the user has done
+	{
+		questionsDone += 1;
+	}
+	public int getRemaining() //gets the remaining time of game
+	{
+		return timeSpent;
+	}
+	public int getDone() //returns how many questions the user answers (excluding skip)
+	{
+		return questionsDone;
+	}
+}

@@ -3,7 +3,9 @@ Game to access knowledge of countries shapes as they get progressively better at
 
 This game is extremely fun for anyone who wants to learn to memorize countries by their shape. Additionally, fun facts are present
 throughout the game, and there are powerups throughout to enhance the learning experience. This entire game is coded in Java, 
-meaning based on code, it was very difficult to make compared to using other programming languages as it was technical. 
+meaning based on code, it was very difficult to make compared to using other programming languages as it was technical.
+
+Before you start playing here is the link for a tutorial on youtube: https://www.youtube.com/watch?v=e_40g-6kNjw
 
 # Quick Start:
 If you want to play this game, go to the **releases page**. There I have created a zip file called NameThatNation v1.0.0, where you can download the zip file. 

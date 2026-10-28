@@ -2404,6 +2404,7 @@ class Information
 	{
 		return sTime;
 	}
+	
 	public void reset() //called to reset all arraylists
 	{
 		sTime.clear();
@@ -2418,6 +2419,7 @@ class Information
 		timeSpent = 0;
 		percentage = 0;
 	}
+	
 	public void setEarn(int ind) //sets earned points
 	{
 		earned[ind] = true;
@@ -2454,8 +2456,9 @@ class Information
 	{
 		return timeSpent;
 	}
+	
 	public int getDone() //returns how many questions the user answers (excluding skip)
 	{
 		return questionsDone;
 	}
-}
+} 

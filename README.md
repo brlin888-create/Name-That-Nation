@@ -61,7 +61,7 @@ End Panel:
 <img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/80f90915-8934-4aa2-b822-18c84373863c" />
 
 Achievements:
-![Uploading image.png…]()
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/dbb08b28-4df5-4551-aaf2-2de12663caba" />
 
 **AND MOREEEE!!!**
 

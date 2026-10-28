@@ -43,25 +43,24 @@ Home Screen Image:
 <img width="932" height="485" alt="image" src="https://github.com/user-attachments/assets/686c6161-7957-438e-8e85-a90732920f90" />
 
 Settings Panel:
-<img width="938" height="524" alt="image" src="https://github.com/user-attachments/assets/f79fbcc2-74b1-4d8d-ad8d-327fb3d0ba66" />
+<img width="937" height="495" alt="image" src="https://github.com/user-attachments/assets/ce5678b0-260a-4e91-9466-b2c973cc554e" />
 
 Instructions Panel:
+<img width="938" height="524" alt="image" src="https://github.com/user-attachments/assets/f79fbcc2-74b1-4d8d-ad8d-327fb3d0ba66" />
+Country Info:
 <img width="935" height="491" alt="image" src="https://github.com/user-attachments/assets/af1329ed-1fc3-44ce-ba97-0e90e0513537" />
 
-Country Info:
+Play Screen:
 <img width="931" height="492" alt="image" src="https://github.com/user-attachments/assets/c4d172ca-2759-4e62-a223-5e072a9c3af3" />
 
-Play Screen:
+Results Panel:
 <img width="939" height="492" alt="image" src="https://github.com/user-attachments/assets/d8908120-42a3-4000-9548-57e5067b7caf" />
 
-Results Panel:
+End Panel:
 <img width="892" height="487" alt="image" src="https://github.com/user-attachments/assets/d64d7937-026c-4354-ac21-d2a54c289377" />
 
-End Panel:
-<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/80f90915-8934-4aa2-b822-18c84373863c" />
-
 Achievements:
-<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/dbb08b28-4df5-4551-aaf2-2de12663caba" />
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/80f90915-8934-4aa2-b822-18c84373863c" />
 
 **AND MOREEEE!!!**
 
